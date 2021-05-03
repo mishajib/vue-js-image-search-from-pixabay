@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Search From Pixabay</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    />
+    <style>
+      [v-cloak] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="row" v-cloak>
+          <div class="col-12 my-5">
+            <h1 class="text-center">Image Search From Pixabay</h1>
+            <div class="row">
+              <div class="col-8 mx-auto mt-3">
+                <form @submit.prevent="getImages()">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input
+                        type="text"
+                        class="form-control"
+                        aria-label="Search from here..."
+                        v-model="searchText"
+                      />
+                      <div class="input-group-append">
+                        <button type="submit" class="btn btn-outline-primary">
+                          Action
+                        </button>
+                      </div>
+                    </div>
+                    <p class="small mt-1">
+                      Powered by <a href="https://pixabay.com/">PIXABAY</a> &
+                      App Build By <a href="https://mishajib.com">MI SHAJIB</a>
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              <template v-for="(image, index) in images" :key="index">
+                <div class="col-4">
+                  <a
+                    :href="image.pageURL"
+                    target="_blank"
+                    :title="image.tags"
+                    class="d-block mb-4"
+                  >
+                    <img
+                      class="img-fluid img-thumbnail"
+                      :src="image.webformatURL"
+                      :title="image.tags"
+                      :alt="image.type"
+                      loading="lazy"
+                    />
+                  </a>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+      import {
+        createApp,
+        ref,
+        reactive,
+      } from "https://unpkg.com/vue@3.0.11/dist/vue.esm-browser.prod.js";
+      const app = createApp({
+        data() {
+          return {
+            apiKey: "place-api-key-from-pixabay",
+            apiUrl:
+              "https://pixabay.com/api/?image_type=photo&orientation=horizontal&per_page=50",
+            searchText: "",
+            images: [],
+          };
+        },
+        methods: {
+          getImages() {
+            let self = this;
+            const URL = `${self.apiUrl}&q=${self.searchText}&key=${self.apiKey}`;
+            fetch(URL)
+              .then((res) => res.json())
+              .then((data) => {
+                self.images = data.hits;
+              });
+          },
+        },
+      });
+      app.mount("#app");
+    </script>
+  </body>
+</html>
